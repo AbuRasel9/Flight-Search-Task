@@ -1,5 +1,6 @@
 import 'package:flight_search/configs/enums/font_options.dart';
 import 'package:flight_search/configs/theme/app_theme_data.dart';
+import 'package:flight_search/view/home/home_view.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: AppThemeData.lightThemeData(FontOptions.montserrat),
       darkTheme: AppThemeData.darkThemeData(FontOptions.montserrat),
       themeMode: ThemeMode.light,
-      home: c
+      home: HomeView()
     );
   }
 }
