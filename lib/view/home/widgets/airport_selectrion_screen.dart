@@ -1,7 +1,7 @@
+import 'package:flight_search/configs/extension/context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../view_model/airport_view_model/airport_view_model.dart';
-
 
 class AirportSelectionScreen extends StatefulWidget {
   final bool isDeparture;
@@ -34,13 +34,12 @@ class _AirportSelectionScreenState extends State<AirportSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.theme;
     final title = widget.isDeparture ? 'Select Departure' : 'Select Arrival';
 
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        backgroundColor: Colors.blueAccent,
-        foregroundColor: Colors.white,
       ),
       body: Column(
         children: [
@@ -48,12 +47,10 @@ class _AirportSelectionScreenState extends State<AirportSelectionScreen> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: _searchController,
+              style: theme.textTheme.bodyLarge,
               decoration: InputDecoration(
                 hintText: 'Search by city, airport name, or code...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                prefixIcon: Icon(Icons.search, color: theme.colorScheme.primary),
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
               ),
               onChanged: (value) {
@@ -66,46 +63,71 @@ class _AirportSelectionScreenState extends State<AirportSelectionScreen> {
             child: Consumer<AirportViewModel>(
               builder: (context, airportProvider, child) {
                 if (airportProvider.isLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: theme.colorScheme.primary,
+                    ),
+                  );
                 }
 
                 if (airportProvider.errorMessage.isNotEmpty) {
-                  print("------error---${airportProvider.errorMessage}");
                   return Center(
                     child: Text(
                       'Error: ${airportProvider.errorMessage}',
-                      style: const TextStyle(color: Colors.red),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.error,
+                      ),
                     ),
                   );
                 }
 
                 if (airportProvider.airports.isEmpty) {
-                  return const Center(child: Text('No airports found.'));
+                  return Center(
+                    child: Text(
+                      'No airports found.',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.outline,
+                      ),
+                    ),
+                  );
                 }
 
                 return ListView.separated(
                   itemCount: airportProvider.airports.length,
-                  separatorBuilder: (context, index) => const Divider(height: 1),
+                  separatorBuilder: (context, index) => Divider(
+                    height: 1,
+                    color: theme.colorScheme.outline.withOpacity(0.1),
+                  ),
                   itemBuilder: (context, index) {
                     final airport = airportProvider.airports[index];
                     return ListTile(
-                      leading: const Icon(Icons.local_airport, color: Colors.blueAccent),
+                      leading: Icon(
+                        Icons.local_airport,
+                        color: theme.colorScheme.primary,
+                      ),
                       title: Text(
                         airport.airportName ?? 'Unknown',
-                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.onSurface,
+                        ),
                       ),
-                      subtitle: Text('${airport.airportCity ?? ''}, ${airport.airportCountry ?? ''}'),
+                      subtitle: Text(
+                        '${airport.airportCity ?? ''}, ${airport.airportCountry ?? ''}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.outline,
+                        ),
+                      ),
                       trailing: Text(
                         airport.code ?? '',
-                        style: const TextStyle(
+                        style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: Colors.blueAccent,
-                          fontSize: 16,
+                          color: theme.colorScheme.primary,
                         ),
                       ),
                       onTap: () {
                         if (widget.isDeparture) {
-                          airportProvider?.setDepartureAirport(airport);
+                          airportProvider.setDepartureAirport(airport);
                         } else {
                           airportProvider.setArrivalAirport(airport);
                         }

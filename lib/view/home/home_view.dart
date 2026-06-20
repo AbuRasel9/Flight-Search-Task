@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../view_model/airport_view_model/airport_view_model.dart';
+import '../../view_model/flightSearchViewModel/flight_search_view_model.dart';
+import 'flightSearchResult/flight_search_result.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -17,6 +19,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     final airportViewModel = Provider.of<AirportViewModel>(context);
+    final theme = context.theme;
 
     return Scaffold(
       appBar: AppBar(
@@ -61,27 +64,29 @@ class _HomeViewState extends State<HomeView> {
             const Spacer(),
             ElevatedButton(
               onPressed: (airportViewModel.departureAirport != null &&
-                  airportViewModel.arrivalAirport != null)
+                      airportViewModel.arrivalAirport != null)
                   ? () {
-                // final flightSearchProvider = Provider.of<FlightSearchViewModel>(
-                //     context,
-                //     listen: false);
-                // flightSearchProvider.searchFlights(
-                //   airportViewModel.departureAirport!.code ?? '',
-                //   airportViewModel.arrivalAirport!.code ?? '',
-                // );
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => const FlightResultsScreen(),
-                //   ),
-                // );
-              }
+                      final flightSearchProvider =
+                          Provider.of<FlightSearchViewModel>(context,
+                              listen: false);
+                      flightSearchProvider.searchFlights(
+                        airportViewModel.departureAirport!.code ?? '',
+                        airportViewModel.arrivalAirport!.code ?? '',
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FlightResultsScreen(),
+                        ),
+                      );
+                    }
                   : null,
-
-              child: const Text(
+              child: Text(
                 'Search Flights',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.colorScheme.onPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -91,4 +96,3 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
-

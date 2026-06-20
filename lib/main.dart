@@ -1,8 +1,10 @@
 import 'package:flight_search/configs/enums/font_options.dart';
 import 'package:flight_search/configs/theme/app_theme_data.dart';
 import 'package:flight_search/repository/airport_repository/airport_repository_impl.dart';
+import 'package:flight_search/repository/flight_repository/flight_repository_impl.dart';
 import 'package:flight_search/view/home/home_view.dart';
 import 'package:flight_search/view_model/airport_view_model/airport_view_model.dart';
+import 'package:flight_search/view_model/flightSearchViewModel/flight_search_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,10 +21,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final networkClient = NetworkClient();
     final airportRepository = AirportRepositoryImpl(networkClient);
+    final flightRepository = FlightRepositoryImpl(networkClient);
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (_) => AirportViewModel(repository: airportRepository),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FlightSearchViewModel(repository: flightRepository),
         ),
       ],
       child: MaterialApp(
